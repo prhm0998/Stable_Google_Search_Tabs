@@ -1,0 +1,15 @@
+name: Google 検索結果 メニューの順番を固定します
+description: 検索結果のメニューの順番を固定します
+format:
+  date: YY/MM/DD
+  time: HH:mm:ss
+popup:
+  dialog:
+    button:
+      submit: 登録
+  help:
+    row1: 各項目は検索メニューと完全一致するテキストを入力してください
+    row2: 各項目はドラッグ操作で入れ替えられます
+    row3: 項目をドラッグしたまま外側に持って行くと削除できます
+default:
+  list: '["すべて", "AI モード",  "画像", "動画"]'

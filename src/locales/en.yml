@@ -1,0 +1,15 @@
+name: Stable Google Search Tabs
+description: Keeps the order of Google search tabs fixed
+format:
+  date: MM/DD/YY
+  time: HH:mm:ss
+popup:
+  dialog:
+    button:
+      submit: Submit
+  help:
+    row1: Enter text exactly matching the search menu.
+    row2: Drag items to reorder.
+    row3: Drag an item outside to delete it.
+default:
+  list: '["All", "AI Mode", "Images", "Videos", "Short Videos"]'

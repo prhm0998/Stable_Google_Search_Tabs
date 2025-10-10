@@ -1,0 +1,49 @@
+name: Release to Chrome Web Store
+
+on:
+  push:
+    branches:
+      - "test/fix-workflow-import-env"
+    tags:
+      - "v[0-9]+.[0-9]+.0" # minor以上のアップデートをトリガーにする
+  workflow_dispatch: # 手動実行を許可
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --prod --no-frozen-lockfile
+
+      - name: Create .env.submit
+        run: echo "${{ secrets.ENV_SUBMIT }}" > .env.submit
+
+      - name: Build and Zip
+        run: pnpm zip
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: .output/*.zip
+          if-no-files-found: error
+          include-hidden-files: true
+
+      - name: Run dryrun-unix script
+        run: pnpm dryrun-unix
+
+      - name: Run submit-unix script
+        run: pnpm submit-unix
