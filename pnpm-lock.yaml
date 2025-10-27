@@ -14,6 +14,9 @@ importers:
       '@1natsu/wait-element':
         specifier: ^4.1.2
         version: 4.1.2
+      '@prhm0998/shared':
+        specifier: github:prhm0998/shared#v1.0.2
+        version: https://codeload.github.com/prhm0998/shared/tar.gz/9808fa4f3cb8e17d1f1d1e4c3d97603ec22ff802(vue@3.5.22(typescript@5.9.3))
       '@tailwindcss/vite':
         specifier: ^4.1.14
         version: 4.1.14(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.93.2))
@@ -32,6 +35,12 @@ importers:
       daisyui:
         specifier: ^5.1.29
         version: 5.1.29
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
+      destr:
+        specifier: ^2.0.5
+        version: 2.0.5
       sass:
         specifier: ^1.93.2
         version: 1.93.2
@@ -679,6 +688,12 @@ packages:
   '@pnpm/npm-conf@2.3.1':
     resolution: {integrity: sha512-c83qWb22rNRuB0UaVCI0uRPNRr8Z0FWnEIvT47jiHAmOIUHbBOg5XvV7pM5x+rKn9HRpjxquDbXYSXr3fAKFcw==}
     engines: {node: '>=12'}
+
+  '@prhm0998/shared@https://codeload.github.com/prhm0998/shared/tar.gz/9808fa4f3cb8e17d1f1d1e4c3d97603ec22ff802':
+    resolution: {tarball: https://codeload.github.com/prhm0998/shared/tar.gz/9808fa4f3cb8e17d1f1d1e4c3d97603ec22ff802}
+    version: 1.0.1
+    peerDependencies:
+      vue: ^3.5.22
 
   '@rolldown/pluginutils@1.0.0-beta.29':
     resolution: {integrity: sha512-NIJgOsMjbxAXvoGq/X0gD7VPMQ8j9g0BiDaNjVNVjvl+iKXxL3Jre0v31RmBYeLEmkbj2s02v8vFTbUXi5XS2Q==}
@@ -3448,6 +3463,11 @@ snapshots:
       '@pnpm/config.env-replace': 1.1.0
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
+
+  '@prhm0998/shared@https://codeload.github.com/prhm0998/shared/tar.gz/9808fa4f3cb8e17d1f1d1e4c3d97603ec22ff802(vue@3.5.22(typescript@5.9.3))':
+    dependencies:
+      defu: 6.1.4
+      vue: 3.5.22(typescript@5.9.3)
 
   '@rolldown/pluginutils@1.0.0-beta.29': {}
 
