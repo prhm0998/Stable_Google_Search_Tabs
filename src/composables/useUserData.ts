@@ -1,76 +1,64 @@
-import { useDebounceFn } from '@vueuse/core'
+import { applyDefaultProperties, filterProperties } from '@prhm0998/shared/utils'
+import { useGenericStore, type UpdateStateFn } from '@prhm0998/shared/composables'
+import destr from 'destr'
 
 export interface UserData {
   order_list: string[]
 }
 
-export type UserDataEvent =
+export type UserDataUpdateEvent =
   | { type: 'update', key: keyof UserData, value: string[] }
   | { type: 'add', key: keyof UserData, value: string }
   | { type: 'remove', key: keyof UserData, value: string }
 
 
-const getDefaultUserData = (): UserData => ({
-  order_list: JSON.parse(i18n.t("default.list"))
+const getDefaultState = (): UserData => ({
+  order_list: destr(i18n.t("default.list"))
 })
 
-export default function () {
-  const defaultUserData = getDefaultUserData()
-  const { state: storedJson } = useStoredValue('local:data', '{}')
-  const memoryCache = ref<UserData>(defaultUserData)
-
-  // json to state
-  const deserialize = (jsonString: string): UserData => {
-    try {
-      const parsed = JSON.parse(jsonString) as Partial<UserData>
-      // 不要なプロパティを削除
-      const filterd = filterProperties(parsed, defaultUserData)
-      // jsonにないプロパティはデフォルトから持ってくる
-      return applyDefaultProperties(filterd, defaultUserData)
-    }
-    catch {
-      return getDefaultUserData()
-    }
+const deserialize = (jsonString: string): UserData => {
+  try {
+    const parsed = destr(jsonString) as Partial<UserData>
+    const filterd = filterProperties(parsed, getDefaultState())
+    return applyDefaultProperties(filterd, getDefaultState())
   }
-
-  // state to json 後はstringifyするだけの状態に加工する
-  const serialize = (): UserData => {
-    return memoryCache.value
+  catch {
+    return getDefaultState()
   }
+}
 
-  // ストアに更新があったらキャッシュも更新する
-  const initializeCache = () => memoryCache.value = deserialize(storedJson.value)
-  watch(storedJson, (newVal) => memoryCache.value = deserialize(newVal))
-  initializeCache()
+const serialize = (cache: UserData) => JSON.stringify(cache)
 
-  const saveToStorage = useDebounceFn(() => {
-    storedJson.value = JSON.stringify(serialize())
-  }, 100, { maxWait: 1000 })
-
-  const updateUserData = (event: UserDataEvent) => {
-    const { type, key, value } = event
-    switch (type) {
-      case 'update':
-        if (key === 'order_list') {
-          memoryCache.value[key] = value
+const updateStateLogic: UpdateStateFn<UserData, UserDataUpdateEvent> = (state: Ref<UserData>, event: UserDataUpdateEvent) => {
+  const { type, key, value } = event
+  switch (type) {
+    case 'update':
+      if (key === 'order_list') {
+        state.value[key] = value
+      }
+      break
+    case 'add':
+      if (key === 'order_list') {
+        if (!state.value[key].includes(value)) {
+          state.value[key].push(value)
         }
-        break
-      case 'add':
-        if (key === 'order_list') {
-          memoryCache.value[key].push(value)
-        }
-        break
-      case 'remove':
-        if (key === 'order_list') {
-          memoryCache.value[key] = memoryCache.value[key].filter(m => m !== value)
-        }
-      default:
-        break
-    }
-    saveToStorage()
+      }
+      break
+    case 'remove':
+      if (key === 'order_list') {
+        state.value[key] = state.value[key].filter(m => m !== value)
+      }
+    default:
+      break
   }
-  return {
-    state: (memoryCache),
-    updateUserData,
-  }
+}
+
+export default function useUserData() {
+  return useGenericStore<UserData, UserDataUpdateEvent>(
+    'local:UserData',
+    getDefaultState,
+    deserialize,
+    serialize,
+    updateStateLogic
+  )
 }
