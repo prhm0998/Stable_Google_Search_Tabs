@@ -20,7 +20,7 @@ const deserialize = (jsonString: string): UserData => {
   try {
     const parsed = destr(jsonString) as Partial<UserData>
     const filterd = filterProperties(parsed, getDefaultState())
-    return applyDefaultProperties(filterd, getDefaultState())
+    return applyDefaultProperties(getDefaultState(), filterd)
   }
   catch {
     return getDefaultState()
@@ -48,6 +48,7 @@ const updateStateLogic: UpdateStateFn<UserData, UserDataUpdateEvent> = (state: R
       if (key === 'order_list') {
         state.value[key] = state.value[key].filter(m => m !== value)
       }
+      break
     default:
       break
   }
