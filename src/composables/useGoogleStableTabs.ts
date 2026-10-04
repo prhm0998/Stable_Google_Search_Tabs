@@ -6,7 +6,7 @@ import { watch } from "vue";
 export async function useGoogleStableTabs(): Promise<void> {
   const { state } = useUserData();
 
-  const menuContainer = await waitElement("div.beZ0tf.O1uzAe");
+  const menuContainer = await waitElement("div.beZ0tf"); //2026年10月頃にアプデに気付いたので対応
   if (!menuContainer) return;
 
   await sleep(10); // userDataの読み込み待機
@@ -15,7 +15,6 @@ export async function useGoogleStableTabs(): Promise<void> {
     () => state.value.order_list,
     async (newOrderList) => {
       if (!Array.isArray(newOrderList) || newOrderList.length === 0) return;
-
       const listItems = menuContainer.querySelectorAll<HTMLDivElement>('[role="listitem"]');
       if (!listItems.length) return;
 
@@ -24,6 +23,7 @@ export async function useGoogleStableTabs(): Promise<void> {
       for (let i = newOrderList.length - 1; i >= 0; i--) {
         const expectedText = newOrderList[i];
         const itemToMove = listItemsArray.find(item => item.textContent?.trim() === expectedText);
+
         if (itemToMove) menuContainer.prepend(itemToMove);
       }
     },
